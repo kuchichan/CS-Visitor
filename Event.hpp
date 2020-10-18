@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameCharacter.hpp"
+class EventVisitor;
 
 // Obvious - class (LevelUp, LootFound) can be bloated, in diffferent files, has very
 // little in common...
@@ -10,17 +11,17 @@
 
 class Event {
 public:
-    virtual void UpdateStats(GameCharacterStats& stats) = 0;
+    virtual void Accept(EventVisitor& visitor) = 0;
     virtual ~Event() = default;
 };
 
 class LevelUp : public Event {
 public:
     void AddLevel();
-    void UpdateStats(GameCharacterStats& stats) override;  // Event
+    void Accept(EventVisitor& visitor) override;  // Event
 };
 
 class LootFound : public Event {
 public:
-    void UpdateStats(GameCharacterStats& stats) override;  // Event
+    void Accept(EventVisitor& stats) override;  // Event
 };

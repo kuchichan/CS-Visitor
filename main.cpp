@@ -11,7 +11,7 @@ int main() {
     };
 
     for (auto& elem : gameSeq) {
-        elem->UpdateStats(stats);
+        elem->Accept(stats);
     }
     stats.DisplayStats();
 }

@@ -29,3 +29,14 @@ void GameCharacterStats::DisplayStats() {
               << "Int: " << intelligence_ << '\n'
               << "Capacity: " << backpackCount_ << '\n';
 }
+
+void GameCharacterStats::VisitLevelUp(LevelUp& lvlUp) {
+    AddDexterity(5);
+    AddStrength(3);
+    AddIntelligence(2);
+    lvlUp.AddLevel();
+}
+
+void GameCharacterStats::VisitLootFound(LootFound& lootFound) {
+    DecrBackpackCount(1);
+}
