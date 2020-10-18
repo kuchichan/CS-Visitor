@@ -1,4 +1,6 @@
 #include "GameCharacter.hpp"
+#include "Event.hpp"
+
 #include <iostream>
 
 void GameCharacterStats::AddStrength(size_t strength) {

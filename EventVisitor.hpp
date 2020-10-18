@@ -1,4 +1,4 @@
-#include "Event.hpp"
+#pragma once
 
 class LevelUp;
 class LootFound;

@@ -8,6 +8,7 @@ project(CS-Visitor)
  set (SRC
    main.cpp
    GameCharacter.cpp
+   ExternalAppearance.cpp
    Event.cpp
    )
   
