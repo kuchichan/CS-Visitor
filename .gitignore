@@ -1,0 +1,14 @@
+# emacs
+*~
+\#*\#
+.\#*
+.ccls-cache/
+.ccls
+
+# CMake
+build/
+
+#Others
+notes.txt
+
+
