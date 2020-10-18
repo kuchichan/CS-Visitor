@@ -16,17 +16,17 @@
  Wzorzec Visitor opiera się na zasadzie, że dodawanie nowych klas (operacji) jest stosunkowo łatwe i nie
  powoduje potrzeby rekompilowania kodu w miejscach w których nic nie zmienialiśmy. Dodawanie natomiast nowych 
  metod wirtualnych rodzi wiele potencjalnych problemów:
-*** Rekompilacje kodu w wielu miejscach 
-*** Zbyt cięzkie interfejsy (Problem z Liskov)
-*** Problem z Open/Closed modyfikowanie istniejącego kodu 
+**** Rekompilacje kodu w wielu miejscach 
+**** Zbyt cięzkie interfejsy (Problem z Liskov)
+**** Problem z Open/Closed modyfikowanie istniejącego kodu 
 
 * Przykład 
   W przykładzie zaprezentowany jest problem wykonywania operacji na różnych eventach w grze RPG np Level Up, czy
   Znalezienie przedmiotu. Chcemy aktualizowac statystyki postaci w zaleznosci od tych wydarzen. 
   
-  Wersja naiwna:
-*** Podstawowym problemem jest "rozrzucenie" operacji Aktualizacji Statystyk na różne klasy Eventów. 
-*** Dodanie kolejnej operacji wiąże się z dodaniem metody wirtualnej w wszyskimi związanymi z nią "obowiązkami"
+** Wersja naiwna:
+**** Podstawowym problemem jest "rozrzucenie" operacji Aktualizacji Statystyk na różne klasy Eventów. 
+**** Dodanie kolejnej operacji wiąże się z dodaniem metody wirtualnej w wszyskimi związanymi z nią "obowiązkami"
 
   #+BEGIN_SRC C++
   class Event {
@@ -52,6 +52,44 @@
   #+END_SRC
 
   Bardzo szybko może okazać się, że nasz interfejs jest nieadekwatny, wiele Eventów czegoś nie implementuje. 
-  Pojawia się coraz więcej przypadków szczególnych - za chwilę skończymy z drabinką /if else/ i dynamic_cast 
+  Pojawia się coraz więcej przypadków szczególnych - za chwilę skończymy z drabinką /if else/ i dynamic_cast...
 
+** Refactor
+**** Pierwszą rzeczą jaką musimy zrobić, jest sworzenie klasy visitora
+     Przechowuje on logikę wykonywanych operacji w zależności od eventu: 
+     #+BEGIN_SRC C++
+     class EventVisitor {
+     public:
+        virtual void VisitLevelUp(LevelUp& lvlUp) = 0;
+        virtual void VisitLootFound(LootFound& lootFound) = 0;
+     }
+     #+END_SRC
+
+**** W konkretnych Eventach (zwanych ogolnie komponentami) zmieniamy interfejs:
+     #+BEGIN_SRC C++
+     class Event {
+     public:
+        virtual void Accept(EventVisitor& visitor) = 0;
+
+     };
+
+     class LevelUp : public Event {
+     public:
+     void AddLevel();
+     void Accept(EventVisitor& visitor) { 
+         visitor.VisitLevelUp(*this)
+     };
+     #+END_SRC
+
+   Teraz dodanie nowej operacji nie wymaga ingerencji w klasy komponentowe (Event)!
+   Wystarczy stworzyć nowy Visitor implementujący oryginalny interfejs :) 
+   
+* Wady:
+**** Dorzucenie eventu (komponentu) powoduje zmiany we wszystkich wizytorach 
+     Dlatego należy rozróżnić, co jest faktycznie komponentem a co operacją i czy będzie nam się
+     to opłacać. (Np dodanie kolejnego eventu typu "CharacterDeath" wiąże się z nakładem pracy.
+**** Podczas refatoru, jeśli klasa komponentowa posiada wiele metod / pól prywatych - dodatkowa praca.
+     Visitor "wie" o komponentach, ale nie może korzystać z metod prywatnych więc może to wymagać sporych zmian w logice.
+     
+     
   
