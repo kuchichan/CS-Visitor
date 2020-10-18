@@ -1,0 +1,57 @@
+#+title: Wzorzec Odwiedzający (Visitor) 
+
+* Wstęp
+  Wzorzec odwiedzający należy rozważyć w momencie, gdy mamy do czynienia z wyraźnym podziałem 
+  wykonywanych operacji w zależności od obiektu, operacje mają zawiłą logikę. Efektem zastosowania wzorca
+  jest oddzielenie implementacji operacji (przechowywane w instancji clasy  Visitor) od struktur danych 
+  na których operujemy.
+  
+  Przykłady, w których warto Rozpatrzeć wzorzec Visitor to wszelkiego typu parsery: 
+** Parser xml 
+   Oddzielne operacje dla: tagów, atrybutów, namespace'ów, textu, elementów, prefixów
+** Calculator 
+   Tutaj również mnogość występujących znaków - *, +, /, -, mod, nawiasy z kolejnością wykonwyania działań,
+   funkcje specjalne itd...
+
+ Wzorzec Visitor opiera się na zasadzie, że dodawanie nowych klas (operacji) jest stosunkowo łatwe i nie
+ powoduje potrzeby rekompilowania kodu w miejscach w których nic nie zmienialiśmy. Dodawanie natomiast nowych 
+ metod wirtualnych rodzi wiele potencjalnych problemów:
+*** Rekompilacje kodu w wielu miejscach 
+*** Zbyt cięzkie interfejsy (Problem z Liskov)
+*** Problem z Open/Closed modyfikowanie istniejącego kodu 
+
+* Przykład 
+  W przykładzie zaprezentowany jest problem wykonywania operacji na różnych eventach w grze RPG np Level Up, czy
+  Znalezienie przedmiotu. Chcemy aktualizowac statystyki postaci w zaleznosci od tych wydarzen. 
+  
+  Wersja naiwna:
+*** Podstawowym problemem jest "rozrzucenie" operacji Aktualizacji Statystyk na różne klasy Eventów. 
+*** Dodanie kolejnej operacji wiąże się z dodaniem metody wirtualnej w wszyskimi związanymi z nią "obowiązkami"
+
+  #+BEGIN_SRC C++
+  class Event {
+  public:
+    virtual void UpdateStats(GameCharacterStats& stats) = 0;
+    // Inne mozliwe
+    // virtual void UpdateExternalAppearance .. 
+    // virtual void UpdateAttrbutes ... 
+    // virtual void UpdateSkills ...
+    virtual ~Event() = default;
+  };
+
+  class LevelUp : public Event {
+  public:
+     void AddLevel();
+     void UpdateStats(GameCharacterStats& stats) override;  // Event
+  };
+
+  class LootFound : public Event {
+  public:
+    void UpdateStats(GameCharacterStats& stats) override;  // Event
+  };
+  #+END_SRC
+
+  Bardzo szybko może okazać się, że nasz interfejs jest nieadekwatny, wiele Eventów czegoś nie implementuje. 
+  Pojawia się coraz więcej przypadków szczególnych - za chwilę skończymy z drabinką /if else/ i dynamic_cast 
+
+  
