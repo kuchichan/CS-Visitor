@@ -5,8 +5,8 @@
 // Obvious - class (LevelUp, LootFound) can be bloated, in diffferent files, has very
 // little in common...
 
-// Adding New Operation (different that Updatestats) == new virtual method even if we do
-// not want this in some cases! for example update External Appearance ()
+// Adding New Operation (different that UpdateStats) == new virtual method even if we do
+// not want this in some cases! for example UpdateExternalAppearance()
 
 class Event {
 public:
