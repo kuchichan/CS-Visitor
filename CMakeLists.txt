@@ -13,6 +13,3 @@ project(CS-Visitor)
   
 add_executable(${PROJECT_NAME} ${SRC})
 add_compile_options(${PROJECT_NAME} -Wall -pedantic -Wextra)
-
-# target_link_libraries(${PROJECT_NAME}-ut gtest_main -fsanitize=address)
-# add_test(NAME ${PROJECT_NAME}_tests COMMAND ${PROJECT_NAME}-ut)

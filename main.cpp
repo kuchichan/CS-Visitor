@@ -13,4 +13,5 @@ int main() {
     for (auto& elem : gameSeq) {
         elem->UpdateStats(stats);
     }
+    stats.DisplayStats();
 }
